@@ -52,7 +52,7 @@ final class ExecuteTest extends \Tester\TestCase
 		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
 
 		$arguments = [
-			'file' => __DIR__ . '/' . $cssFileName,
+			'file' => $cssFileName,
 			'--baseDir' => 'path',
 		];
 		$input = new \Symfony\Component\Console\Input\ArrayInput($arguments, $command->getDefinition());

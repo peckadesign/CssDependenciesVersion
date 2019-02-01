@@ -40,6 +40,10 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 		$baseDir = $input->getOption('baseDir');
 		$file = $input->getArgument('file');
 
+		if (\strpos($file, '/') !== 0) {
+			$file = \getcwd() . '/' . $file;
+		}
+
 		$version = new class($baseDir, $this->versionParameter) implements \Pd\CssDependenciesVersion\IVersion
 		{
 
