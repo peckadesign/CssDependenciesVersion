@@ -5,7 +5,8 @@
 		"php": "7.1.* || 7.2.*",
 		"symfony/console": "~2.3 || 3.* || 4.*",
 		"nette/http": "2.4.*",
-		"pd/version": "2.*"
+		"pd/version": "2.*",
+		"psr/log": "^1.0.1"
 	},
 	"require-dev": {
 		"nette/tester": ">= 2.1",
