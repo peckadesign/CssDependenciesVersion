@@ -1,0 +1,25 @@
+{
+	"name": "pd/css-dependencies-version",
+	"description": "Nástroj pro overzování závislostí v CSS souboru",
+	"require": {
+		"php": "7.1.* || 7.2.*",
+		"symfony/console": "~2.3 || 3.* || 4.*",
+		"nette/http": "2.4.*",
+		"pd/version": "2.*"
+	},
+	"require-dev": {
+		"nette/tester": ">= 2.1",
+		"pd/coding-standard": "1.16.*",
+		"phpstan/phpstan-strict-rules": "0.10.*"
+	},
+	"autoload": {
+		"psr-4": {
+			"Pd\\CssDependenciesVersion\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"PdTests\\CssDependenciesVersion\\": "tests/"
+		}
+	}
+}
