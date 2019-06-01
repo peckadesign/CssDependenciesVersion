@@ -4,9 +4,10 @@
 	"require": {
 		"php": "7.1.* || 7.2.* || 7.3.*",
 		"symfony/console": "~2.3 || 3.* || 4.*",
-		"nette/http": "2.4.*",
-		"pd/version": "2.*",
-		"psr/log": "^1.0.1"
+		"nette/http": "3.0.*",
+		"pd/version": "3.*@rc",
+		"psr/log": "^1.0.1",
+		"kdyby/console": "2.8.*@dev"
 	},
 	"require-dev": {
 		"nette/tester": ">= 2.1",
@@ -22,5 +23,11 @@
 		"psr-4": {
 			"PdTests\\CssDependenciesVersion\\": "tests/"
 		}
-	}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/VBoss/Console"
+		}
+	]
 }
