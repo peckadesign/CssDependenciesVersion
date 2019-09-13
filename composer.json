@@ -5,14 +5,17 @@
 		"php": "7.1.* || 7.2.* || 7.3.*",
 		"symfony/console": "~2.3 || 3.* || 4.*",
 		"nette/http": "3.0.*",
-		"pd/version": "3.*",
-		"psr/log": "^1.0.1",
-		"kdyby/console": "2.8.*@dev"
+		"pd/version": "dev-contributte-console as 3.0.1",
+		"psr/log": "^1.0.1"
 	},
 	"require-dev": {
 		"nette/tester": ">= 2.1",
 		"pd/coding-standard": "1.17.*",
 		"phpstan/phpstan-strict-rules": "0.10.*"
+	},
+	"suggest": {
+		"kdyby/console": "For Symfony Console support",
+		"contributte/console": "For Symfony Console support"
 	},
 	"autoload": {
 		"psr-4": {
