@@ -2,7 +2,7 @@
 	"name": "pd/css-dependencies-version",
 	"description": "Nástroj pro overzování závislostí v CSS souboru",
 	"require": {
-		"php": "7.1.* || 7.2.* || 7.3.*",
+		"php": "7.1.* || 7.2.* || 7.3.* || 7.4.*",
 		"symfony/console": "~2.3 || 3.* || 4.*",
 		"nette/http": "3.0.*",
 		"pd/version": "3.*",
@@ -10,9 +10,9 @@
 		"kdyby/console": "2.8.*@dev"
 	},
 	"require-dev": {
-		"nette/tester": ">= 2.1",
+		"nette/tester": ">= 2.3",
 		"pd/coding-standard": "1.17.*",
-		"phpstan/phpstan-strict-rules": "0.10.*"
+		"phpstan/phpstan-strict-rules": "0.12.*"
 	},
 	"autoload": {
 		"psr-4": {

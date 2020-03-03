@@ -77,6 +77,8 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 		$cssDependencyVersion = new \Pd\CssDependenciesVersion\CssDependenciesVersion($version, $this->logger, $this->versionParameter);
 
 		\file_put_contents($file, $cssDependencyVersion->process(\file_get_contents($file)));
+
+		return 0;
 	}
 
 }
