@@ -89,7 +89,13 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 
 			public function version(string $url): string
 			{
-				$versionedUrl = new \Nette\Http\Url($this->version->__invoke($url));
+				$versionedPath = $this->version->__invoke($url);
+
+				if ($versionedPath === NULL) {
+					return \md5($url);
+				}
+
+				$versionedUrl = new \Nette\Http\Url($versionedPath);
 
 				return $versionedUrl->getQueryParameter($this->versionParameter);
 			}

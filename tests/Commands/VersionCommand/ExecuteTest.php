@@ -61,6 +61,44 @@ final class ExecuteTest extends \Tester\TestCase
 	}
 
 
+	public function testNonExistingFile(): void
+	{
+		$cssFileName = 'file.css';
+		\Nette\Utils\FileSystem::delete($cssFileName);
+		\Nette\Utils\FileSystem::write($cssFileName, 'body {background: url("/fileNonExisting.png") }');
+
+		$loggerInterface = new \Psr\Log\NullLogger();
+		$output = new \Symfony\Component\Console\Output\BufferedOutput();
+		$absoluteUrlResolver = new \Pd\Version\Resolvers\AbsoluteUrlResolver();
+		$relativePathGetter = new class implements \Pd\Version\Resolvers\Getter\RelativePathGetterInterface {
+
+			public function getFileName(string $directory, string $path): ?string
+			{
+				\Tester\Assert::equal('path', $directory);
+				\Tester\Assert::equal('/fileNonExisting.png', $path);
+
+				return NULL;
+			}
+
+		};
+		$pathResolver = new \Pd\Version\Resolvers\PathResolver(FALSE, $relativePathGetter);
+		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', $absoluteUrlResolver, $pathResolver);
+
+		$arguments = [
+			'file' => $cssFileName,
+			'--baseDir' => 'path',
+		];
+		$input = new \Symfony\Component\Console\Input\ArrayInput($arguments, $command->getDefinition());
+
+		try {
+			$command->run($input, $output);
+			\Tester\Assert::true(\Tester\Assert::isMatching('~^body {background: url\("/fileNonExisting\.png\?v=[a-z0-9]+"\) \}$~', \file_get_contents($cssFileName), TRUE));
+		} finally {
+			\Nette\Utils\FileSystem::delete($cssFileName);
+		}
+	}
+
+
 	public function testRealFile(): void
 	{
 		$cssFileName = 'file.css';
