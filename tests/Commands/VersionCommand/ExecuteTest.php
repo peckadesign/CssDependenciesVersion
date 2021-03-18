@@ -9,10 +9,11 @@ final class ExecuteTest extends \Tester\TestCase
 
 	public function testWithoutOptions(): void
 	{
-		$cb = function (): void {
+		$cb = function (): void
+		{
 			$loggerInterface = new \Psr\Log\NullLogger();
 			$output = new \Symfony\Component\Console\Output\BufferedOutput();
-			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
+			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', []);
 
 			$input = new \Symfony\Component\Console\Input\ArrayInput([]);
 
@@ -24,10 +25,11 @@ final class ExecuteTest extends \Tester\TestCase
 
 	public function testWithoutArguments(): void
 	{
-		$cb = function (): void {
+		$cb = function (): void
+		{
 			$loggerInterface = new \Psr\Log\NullLogger();
 			$output = new \Symfony\Component\Console\Output\BufferedOutput();
-			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
+			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', []);
 
 			$arguments = [
 				'--baseDir' => 'path',
@@ -41,15 +43,15 @@ final class ExecuteTest extends \Tester\TestCase
 	}
 
 
-	public function testRealFile(): void
+	public function testNonExistingFile(): void
 	{
 		$cssFileName = 'file.css';
 		\Nette\Utils\FileSystem::delete($cssFileName);
-		\Nette\Utils\FileSystem::write($cssFileName, 'body {background: url("/file.png") }');
+		\Nette\Utils\FileSystem::write($cssFileName, 'body {background: url("/fileNonExisting.png") }');
 
 		$loggerInterface = new \Psr\Log\NullLogger();
 		$output = new \Symfony\Component\Console\Output\BufferedOutput();
-		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
+		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', []);
 
 		$arguments = [
 			'file' => $cssFileName,
@@ -59,7 +61,48 @@ final class ExecuteTest extends \Tester\TestCase
 
 		try {
 			$command->run($input, $output);
-			\Tester\Assert::true(\Tester\Assert::isMatching('~^body {background: url\("/file\.png\?v=[a-z0-9]+"\) \}$~', \file_get_contents($cssFileName), TRUE));
+			\Tester\Assert::true(\Tester\Assert::isMatching('~^body {background: url\("/fileNonExisting\.png\?v=[a-z0-9]+"\) \}$~', \file_get_contents($cssFileName), TRUE));
+		} finally {
+			\Nette\Utils\FileSystem::delete($cssFileName);
+		}
+	}
+
+
+	public function testRealFile(): void
+	{
+		$cssFileName = 'file.css';
+		\Nette\Utils\FileSystem::delete($cssFileName);
+		\Nette\Utils\FileSystem::write($cssFileName, 'body {background: url("/file.png") }');
+
+		$pathResolver = new class implements \Pd\Version\Resolvers\PathResolverInterface
+		{
+
+			public function resolve(\Nette\Http\Url $url, string $directory, string $parameter): ?string
+			{
+				return '/file.png?v=123';
+			}
+
+
+			public function setStorage(\Nette\Caching\IStorage $storage): void
+			{
+				throw new \Nette\NotImplementedException();
+			}
+
+		};
+
+		$loggerInterface = new \Psr\Log\NullLogger();
+		$output = new \Symfony\Component\Console\Output\BufferedOutput();
+		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', [$pathResolver]);
+
+		$arguments = [
+			'file' => $cssFileName,
+			'--baseDir' => 'path',
+		];
+		$input = new \Symfony\Component\Console\Input\ArrayInput($arguments, $command->getDefinition());
+
+		try {
+			$command->run($input, $output);
+			\Tester\Assert::true(\Tester\Assert::isMatching('~^body {background: url\("/file\.png\?v=123"\) \}$~', \file_get_contents($cssFileName), TRUE));
 		} finally {
 			\Nette\Utils\FileSystem::delete($cssFileName);
 		}

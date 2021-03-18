@@ -15,13 +15,19 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	private $versionParameter;
 
+	private array $getters = [];
 
-	public function __construct(\Psr\Log\LoggerInterface $logger, string $versionParameter)
+
+	/**
+	 * @param \Pd\Version\Resolvers\PathResolverInterface[] $getters
+	 */
+	public function __construct(\Psr\Log\LoggerInterface $logger, string $versionParameter, array $getters)
 	{
 		parent::__construct();
 
 		$this->logger = $logger;
 		$this->versionParameter = $versionParameter;
+		$this->getters = $getters;
 	}
 
 
@@ -44,7 +50,7 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 			$file = \getcwd() . '/' . $file;
 		}
 
-		$version = new class($baseDir, $this->versionParameter) implements \Pd\CssDependenciesVersion\IVersion
+		$version = new class($baseDir, $this->versionParameter, $this->getters) implements \Pd\CssDependenciesVersion\IVersion
 		{
 
 			/**
@@ -58,16 +64,22 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 			private $versionParameter;
 
 
-			public function __construct(string $directory, string $versionParameter)
+			public function __construct(string $directory, string $versionParameter, array $getters)
 			{
-				$this->version = new \Pd\Version\Filter($directory, $versionParameter, FALSE);
+				$this->version = new \Pd\Version\Filter($directory, $versionParameter, ...$getters);
 				$this->versionParameter = $versionParameter;
 			}
 
 
 			public function version(string $url): string
 			{
-				$versionedUrl = new \Nette\Http\Url($this->version->__invoke($url));
+				$versionedPath = $this->version->__invoke($url);
+
+				if ($versionedPath === NULL) {
+					return \md5($url);
+				}
+
+				$versionedUrl = new \Nette\Http\Url($versionedPath);
 
 				return $versionedUrl->getQueryParameter($this->versionParameter);
 			}
