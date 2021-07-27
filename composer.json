@@ -2,16 +2,16 @@
 	"name": "pd/css-dependencies-version",
 	"description": "Nástroj pro overzování závislostí v CSS souboru",
 	"require": {
-		"php": "7.1.* || 7.2.* || 7.3.* || 7.4.*",
+		"php": "^7.4 || ^8.0",
 		"symfony/console": "~2.3 || 3.* || 4.*",
-		"nette/http": "3.0.*",
+		"nette/http": "3.0.* || 3.1.*",
 		"pd/version": ">= 3.1.2",
 		"psr/log": "^1.0.1",
 		"kdyby/console": "2.8.*@dev"
 	},
 	"require-dev": {
 		"nette/tester": ">= 2.3",
-		"pd/coding-standard": "1.17.*",
+		"pd/coding-standard": "1.27.*",
 		"phpstan/phpstan-strict-rules": "0.12.*"
 	},
 	"autoload": {

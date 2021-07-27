@@ -5,25 +5,13 @@ namespace Pd\CssDependenciesVersion\Commands;
 final class VersionCommand extends \Symfony\Component\Console\Command\Command
 {
 
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
+	private \Psr\Log\LoggerInterface $logger;
 
-	/**
-	 * @var string
-	 */
-	private $versionParameter;
+	private string $versionParameter;
 
-	/**
-	 * @var \Pd\Version\Resolvers\AbsoluteUrlResolver
-	 */
-	private $absoluteUrlResolver;
+	private \Pd\Version\Resolvers\AbsoluteUrlResolver $absoluteUrlResolver;
 
-	/**
-	 * @var \Pd\Version\Resolvers\PathResolver
-	 */
-	private $pathResolver;
+	private \Pd\Version\Resolvers\PathResolver $pathResolver;
 
 
 	public function __construct(
@@ -64,15 +52,9 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 		$version = new class($baseDir, $this->versionParameter, $this->absoluteUrlResolver, $this->pathResolver) implements \Pd\CssDependenciesVersion\IVersion
 		{
 
-			/**
-			 * @var \Pd\Version\Filter
-			 */
-			private $version;
+			private \Pd\Version\Filter $version;
 
-			/**
-			 * @var string
-			 */
-			private $versionParameter;
+			private string $versionParameter;
 
 
 			public function __construct(
@@ -89,7 +71,13 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 
 			public function version(string $url): string
 			{
-				$versionedUrl = new \Nette\Http\Url($this->version->__invoke($url));
+				$versionedPath = $this->version->__invoke($url);
+
+				if ($versionedPath === NULL) {
+					return \md5($url);
+				}
+
+				$versionedUrl = new \Nette\Http\Url($versionedPath);
 
 				return $versionedUrl->getQueryParameter($this->versionParameter);
 			}

@@ -5,20 +5,11 @@ namespace Pd\CssDependenciesVersion;
 final class CssDependenciesVersion
 {
 
-	/**
-	 * @var IVersion
-	 */
-	private $version;
+	private IVersion $version;
 
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
+	private \Psr\Log\LoggerInterface $logger;
 
-	/**
-	 * @var string
-	 */
-	private $versionParameter;
+	private string $versionParameter;
 
 
 	public function __construct(IVersion $version, \Psr\Log\LoggerInterface $logger, string $versionParameter)
