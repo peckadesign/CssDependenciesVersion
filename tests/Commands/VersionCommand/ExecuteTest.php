@@ -12,7 +12,17 @@ final class ExecuteTest extends \Tester\TestCase
 		$cb = function (): void {
 			$loggerInterface = new \Psr\Log\NullLogger();
 			$output = new \Symfony\Component\Console\Output\BufferedOutput();
-			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
+			$absoluteUrlResolver = new \Pd\Version\Resolvers\AbsoluteUrlResolver();
+			$relativePathGetter = new class implements \Pd\Version\Resolvers\Getter\RelativePathGetterInterface {
+
+				public function getFileName(string $directory, string $path): ?string
+				{
+
+				}
+
+			};
+			$pathResolver = new \Pd\Version\Resolvers\PathResolver(FALSE, $relativePathGetter);
+			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', $absoluteUrlResolver, $pathResolver);
 
 			$input = new \Symfony\Component\Console\Input\ArrayInput([]);
 
@@ -27,7 +37,17 @@ final class ExecuteTest extends \Tester\TestCase
 		$cb = function (): void {
 			$loggerInterface = new \Psr\Log\NullLogger();
 			$output = new \Symfony\Component\Console\Output\BufferedOutput();
-			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
+			$absoluteUrlResolver = new \Pd\Version\Resolvers\AbsoluteUrlResolver();
+			$relativePathGetter = new class implements \Pd\Version\Resolvers\Getter\RelativePathGetterInterface {
+
+				public function getFileName(string $directory, string $path): ?string
+				{
+
+				}
+
+			};
+			$pathResolver = new \Pd\Version\Resolvers\PathResolver(FALSE, $relativePathGetter);
+			$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', $absoluteUrlResolver, $pathResolver);
 
 			$arguments = [
 				'--baseDir' => 'path',
@@ -49,7 +69,20 @@ final class ExecuteTest extends \Tester\TestCase
 
 		$loggerInterface = new \Psr\Log\NullLogger();
 		$output = new \Symfony\Component\Console\Output\BufferedOutput();
-		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v');
+		$absoluteUrlResolver = new \Pd\Version\Resolvers\AbsoluteUrlResolver();
+		$relativePathGetter = new class implements \Pd\Version\Resolvers\Getter\RelativePathGetterInterface {
+
+			public function getFileName(string $directory, string $path): ?string
+			{
+				\Tester\Assert::equal('path', $directory);
+				\Tester\Assert::equal('/file.png', $path);
+
+				return __DIR__ . $path;
+			}
+
+		};
+		$pathResolver = new \Pd\Version\Resolvers\PathResolver(FALSE, $relativePathGetter);
+		$command = new \Pd\CssDependenciesVersion\Commands\VersionCommand($loggerInterface, 'v', $absoluteUrlResolver, $pathResolver);
 
 		$arguments = [
 			'file' => $cssFileName,

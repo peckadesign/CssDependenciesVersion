@@ -15,13 +15,30 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 	 */
 	private $versionParameter;
 
+	/**
+	 * @var \Pd\Version\Resolvers\AbsoluteUrlResolver
+	 */
+	private $absoluteUrlResolver;
 
-	public function __construct(\Psr\Log\LoggerInterface $logger, string $versionParameter)
+	/**
+	 * @var \Pd\Version\Resolvers\PathResolver
+	 */
+	private $pathResolver;
+
+
+	public function __construct(
+		\Psr\Log\LoggerInterface $logger,
+		string $versionParameter,
+		\Pd\Version\Resolvers\AbsoluteUrlResolver $absoluteUrlResolver,
+		\Pd\Version\Resolvers\PathResolver $pathResolver
+	)
 	{
 		parent::__construct();
 
 		$this->logger = $logger;
 		$this->versionParameter = $versionParameter;
+		$this->absoluteUrlResolver = $absoluteUrlResolver;
+		$this->pathResolver = $pathResolver;
 	}
 
 
@@ -44,7 +61,7 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 			$file = \getcwd() . '/' . $file;
 		}
 
-		$version = new class($baseDir, $this->versionParameter) implements \Pd\CssDependenciesVersion\IVersion
+		$version = new class($baseDir, $this->versionParameter, $this->absoluteUrlResolver, $this->pathResolver) implements \Pd\CssDependenciesVersion\IVersion
 		{
 
 			/**
@@ -58,9 +75,14 @@ final class VersionCommand extends \Symfony\Component\Console\Command\Command
 			private $versionParameter;
 
 
-			public function __construct(string $directory, string $versionParameter)
+			public function __construct(
+				string $directory,
+				string $versionParameter,
+				\Pd\Version\Resolvers\AbsoluteUrlResolver $absoluteUrlResolver,
+				\Pd\Version\Resolvers\PathResolver $pathResolver
+			)
 			{
-				$this->version = new \Pd\Version\Filter($directory, $versionParameter, FALSE);
+				$this->version = new \Pd\Version\Filter($directory, $versionParameter, $absoluteUrlResolver, $pathResolver);
 				$this->versionParameter = $versionParameter;
 			}
 
