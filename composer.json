@@ -3,16 +3,19 @@
 	"description": "Nástroj pro overzování závislostí v CSS souboru",
 	"require": {
 		"php": "^7.4 || ^8.0",
-		"symfony/console": "~2.3 || 3.* || 4.*",
-		"nette/http": "3.0.* || 3.1.*",
-		"pd/version": ">= 3.1.2",
-		"psr/log": "^1.0.1",
-		"kdyby/console": "2.8.*@dev"
+		"symfony/console": "^3.0 | ^4.0 | ^5.0",
+		"nette/http": "^3.0",
+		"pd/version": "^3.3",
+		"psr/log": "^1.0.1"
 	},
 	"require-dev": {
 		"nette/tester": ">= 2.3",
 		"pd/coding-standard": "1.27.*",
 		"phpstan/phpstan-strict-rules": "0.12.*"
+	},
+	"suggest": {
+		"kdyby/console": "For Symfony Console support",
+		"contributte/console": "For Symfony Console support"
 	},
 	"autoload": {
 		"psr-4": {
